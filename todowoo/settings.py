@@ -43,7 +43,15 @@ INSTALLED_APPS = [
     'todo',
     'api',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
+
+# Enables permission_classes in views to use token authentication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
