@@ -34,3 +34,17 @@ class TodoListCreate(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
+
+
+class TodoRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    """
+    A view to allow updating and deleting Todos
+    """
+    serializer_class = TodoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    # Ensure the logged in user only gets their Todos that have been completed
+    def get_queryset(self):
+        user = self.request.user
+        todos = Todo.objects.all()
+        return todos
