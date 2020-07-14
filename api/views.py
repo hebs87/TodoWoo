@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http import JsonResponse
 from django.db import IntegrityError
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 
@@ -31,6 +32,31 @@ def signup(request):
                 'error': 'That username has already been taken. Please choose a new username',
             }
             return JsonResponse(json_response, status=400)
+
+
+@csrf_exempt
+def login(request):
+    """
+    Allow users to login and get the token
+    """
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        user = authenticate(request, username=data['username'], password=data['password'])
+        if user is None:
+            json_response = {
+                'error': 'Could not login. Please check the username and password.',
+            }
+            return JsonResponse(json_response, status=400)
+        try:
+            token = Token.objects.get(user=user)
+        except:
+            token = Token.objects.create(user=user)
+
+        json_response = {
+            'token': str(token),
+        }
+
+        return JsonResponse(json_response, status=201)
 
 
 class TodoCompleteList(generics.ListAPIView):
