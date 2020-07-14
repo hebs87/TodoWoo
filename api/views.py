@@ -7,6 +7,7 @@ from rest_framework.parsers import JSONParser
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 
 # Create your views here.
@@ -20,8 +21,9 @@ def signup(request):
             data = JSONParser().parse(request)
             user = User.objects.create_user(data['username'], password=data['password'])
             user.save()
+            token = Token.objects.create(user=user)
             json_response = {
-                'token': 'asdsdfadf',
+                'token': str(token),
             }
             return JsonResponse(json_response, status=201)
         except IntegrityError:
