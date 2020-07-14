@@ -46,10 +46,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 ]
 
-# Enables permission_classes in views to use token authentication
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        # Enables permission_classes in views to use token authentication
         'rest_framework.authentication.TokenAuthentication',
+        # Enables browser session to use token authentication
+        'rest_framework.authentication.SessionAuthentication',
     ]
 }
 
