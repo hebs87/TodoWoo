@@ -2,9 +2,35 @@ from rest_framework import generics, permissions
 from todo.models import *
 from .serializers import *
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
+from django.http import JsonResponse
+from django.db import IntegrityError
+from django.contrib.auth.models import User
 
 
 # Create your views here.
+@csrf_exempt
+def signup(request):
+    """
+    Allow users to signup without the need for a csrf token
+    """
+    if request.method == 'POST':
+        try:
+            data = JSONParser().parse(request)
+            user = User.objects.create_user(data['username'], password=data['password'])
+            user.save()
+            json_response = {
+                'token': 'asdsdfadf',
+            }
+            return JsonResponse(json_response, status=201)
+        except IntegrityError:
+            json_response = {
+                'error': 'That username has already been taken. Please choose a new username',
+            }
+            return JsonResponse(json_response, status=400)
+
+
 class TodoCompleteList(generics.ListAPIView):
     """
     A view to return a list of completed Todos

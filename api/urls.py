@@ -6,4 +6,5 @@ urlpatterns = [
     path('todos/<int:pk>', TodoRetrieveUpdateDestroy.as_view(), name='single_todo'),
     path('todos/<int:pk>/completed', TodoComplete.as_view(), name='todo_completed'),
     path('todos/completed', TodoCompleteList.as_view(), name='completed_todos_list'),
+    path('signup', signup, name='signup'),
 ]
